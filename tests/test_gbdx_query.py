@@ -17,12 +17,12 @@ from gbdx.constants import TEST_AOI
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.gbdx = get_session()
+        self.session = get_session()
         
     def test_A_perform_query(self):
         print("\nTesting simple catalog query")
         query = GBDXQuery(TEST_AOI)
-        result = query(self.gbdx)
+        result = query(self.session)
         self.assertTrue( len(result) > 10, "Unexpectedly few results for test query")
 
         cat_id_list = result.list_IDs()
@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
         print("\nTesting date-filtered catalog query")
         dates = ('2010-01-01','2015-01-01')
         query = GBDXQuery(TEST_AOI, date_range=dates)
-        result = query(self.gbdx)
+        result = query(self.session)
         self.assertTrue( len(result) == 46, "There should be 46 records returned.")
 
 

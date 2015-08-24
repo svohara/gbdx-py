@@ -1,0 +1,11 @@
+[gbdx]
+auth_url = https://geobigdata.io/auth/v1/oauth/token/
+user_name = nobody
+user_password = not_a_password
+client_id = abc123
+client_secret = xyz987
+
+[gbdx_token]
+json = {"token_type": "Bearer", "refresh_token": "YxyJuUbVbTXLwlwHmF9byBl4sf04AU",
+		"access_token": "SyWDs30bOhr0m6KTrwunzyXc3hgPSU", "scope": ["read", "write"],
+		"expires_in": 604800, "expires_at": 1441043282.124116}

@@ -95,7 +95,7 @@ class GBDXQuery(object):
         """
         return self.query(session)
 
-    def query(self, gbdx):
+    def query(self, session):
         """
         Queries the gbdx catalog and returns the results.
         Note that this object caches the query results,
@@ -106,7 +106,7 @@ class GBDXQuery(object):
         by setting a new AOI value, you MUST call the
         refresh() method before performing a new query,
         or you will get the results from the old parameters.
-        @param gbdx: The gbdx session object
+        @param session: The gbdx session object
         """
         query_start = time.time()
         if self._last_query_results:
@@ -118,8 +118,8 @@ class GBDXQuery(object):
         payload = json.dumps(self.search_body)
         url = os.path.join(GBDX_BASE_URL,'catalog','v1','search')
 
-        json_res = post_json(gbdx, url, payload)
-        #res = gbdx.post(url, data=payload)
+        json_res = post_json(session, url, payload)
+        #res = session.post(url, data=payload)
         #res.raise_for_status()
         #json_res = res.json()
 
@@ -139,7 +139,11 @@ class GBDXQueryResult(object):
     def __init__(self, results_dict):
         self.stats = results_dict['stats']
         self.search_tag = results_dict['searchTag']
-        self.results = results_dict['results']
+        self.results = self._get_sorted_results(results_dict['results'])
+
+    def _get_sorted_results(self, raw_results):
+        tmp = sorted( [ (record['identifier'], record) for record in raw_results])
+        return [rec for (_,rec) in tmp]
 
     def __len__(self):
         return self.stats['totalRecords']

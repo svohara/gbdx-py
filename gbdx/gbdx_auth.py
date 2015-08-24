@@ -52,6 +52,10 @@ def get_session(config_file=None):
 
         # Note that to use a token from the config, we have to set it
         # on the client and the session!
+        
+        #TODO: Steve says this doesn't work correctly when a token is completely
+        # expired...trying to use the token raises KeyError because 'access_token'
+        # key doesn't exist...
         sess = OAuth2Session(client_id, client=LegacyApplicationClient(client_id, token=token),
                           auto_refresh_url=cfg.get('gbdx','auth_url'),
                           auto_refresh_kwargs={'client_id':client_id,
@@ -85,7 +89,7 @@ def _unpack_apikey(apikey):
     tmp = apikey.split(':')
     client_id = tmp[0]
     client_secret = ":".join(tmp[1:])
-    return (client_id, client_secret)    
+    return (client_id, client_secret)
 
 # TODO The following function is basically monkey-patching,
 #    so there might be a much cleaner way to do this with
@@ -95,7 +99,6 @@ def _post(sess, url, data=None, **kwargs):
     Replacement for the OAuth2Session object to provide
     an easier to use post method, where the default headers
     use json payloads.
-    
     """
     token = sess.token['access_token']
     default_headers = {'Authorization':'Bearer {}'.format(token),
@@ -115,7 +118,7 @@ def configure(config_file=None):
     print("Please provide the following information.")
     config_data['user_name'] = raw_input("user_name: ")
     config_data['user_password'] = raw_input("user_password: ")
-    
+
     #TODO: I haven't had much luck being able to copy-paste in
     # an apikey and not have encoding problems, like what happens
     # with "\" as a character creating an escape, etc...
@@ -137,7 +140,3 @@ def configure(config_file=None):
     with open(config_file, 'w') as cfg_file:
         cfg.write(cfg_file)
 
-    
-    
-    
-    

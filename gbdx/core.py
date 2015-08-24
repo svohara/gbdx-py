@@ -11,60 +11,60 @@ import numpy as np
 
 from .constants import GBDX_BASE_URL
 
-def get_json(gbdx, url):
+def get_json(session, url):
     """
-    Wrapper for gbdx.get() when you want to get
+    Wrapper for session.get() when you want to get
     the results as json. Handles the boiler plate
     code for checking the result status and converting
     result to json
     """
-    ret = gbdx.get(url)
+    ret = session.get(url)
     ret.raise_for_status()
     return ret.json()
 
-def post_json(gbdx, url, payload):
+def post_json(session, url, payload):
     """
-    Wrapper for gbdx.post() when you want to get
+    Wrapper for session.post() when you want to get
     the results as json. Handles the boilder plate
     code for checking the result status and converting
     the result to json.
     """
-    ret = gbdx.post(url, data=payload)
+    ret = session.post(url, data=payload)
     ret.raise_for_status()
     return ret.json()
 
-def get_s3creds(gbdx, duration=3600):
+def get_s3creds(session, duration=3600):
     url = os.path.join(GBDX_BASE_URL, "s3creds","v1","prefix?duration={}".format(duration))
-    s3_data = get_json(gbdx, url)    
+    s3_data = get_json(session, url)    
     s3_url = "s3://{bucket}/{prefix}".format(**s3_data)
     return (s3_url, s3_data)
 
-def get_order_status(gbdx, soli):
+def get_order_status(session, soli):
     """
     Retrieves the status information for a specified imagery order.
-    @param gbdx: The gbdx session, from gbdx_auth.get_session.
+    @param session: The gbdx session, from gbdx_auth.get_session.
     @param soli: The order number, or 'soli'
     @return: A dictionary that provides the order status information.
     """
     url = os.path.join(GBDX_BASE_URL,'orders','v1','status',soli)
-    return get_json(gbdx, url)
+    return get_json(session, url)
 
-def get_catalog_record(gbdx, cat_id):
+def get_catalog_record(session, cat_id):
     """
     Retrieves the catalog record for the image with given cat_id,
     if one exists.
-    @param gbdx: The gbdx session, from gbdx_auth.get_session.
+    @param session: The gbdx session, from gbdx_auth.get_session.
     @param cat_id: The image catalog id
     @return: A dictionary with the record information or None
     """
     url = os.path.join(GBDX_BASE_URL, "catalog","v1", "record", cat_id)
-    return get_json(gbdx, url)
+    return get_json(session, url)
 
-def get_thumbnail(gbdx, cat_id, show=True):
+def get_thumbnail(session, cat_id, show=True):
     """
     Gets an openCV image of the catalog thumbnail for a given catalog id. Optionally
     displays that thumbnail in a window.
-    @param gbdx: The gbdx session, from gbdx_auth.get_session.
+    @param session: The gbdx session, from gbdx_auth.get_session.
     @param cat_id: The catalog id for the image of interest
     @param show: If true, after the thumbnail image is retrieved, it will be displayed
     in a freestanding window.
@@ -72,7 +72,7 @@ def get_thumbnail(gbdx, cat_id, show=True):
     openCV functions, saved to disk, or whatever the user desires.
     """
     url = os.path.join(GBDX_BASE_URL,'thumbnails','v1','browse','{}.medium.png'.format(cat_id))
-    ret = gbdx.get(url)
+    ret = session.get(url)
     ret.raise_for_status()
     #pylint: disable=E1103
     img_data = np.fromstring(ret.content, np.uint8)
