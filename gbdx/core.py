@@ -6,8 +6,22 @@ This module exposes convenience functions that
 are wrappers to various GBDX RESTful API calls.
 """
 import os
-import cv2
 import numpy as np
+from io import BytesIO
+
+#Fancy importing to allow the user to use
+# either openCV or matplotlib for image rendering
+_IMAGE_ENGINE = None
+try:
+    import pylab as pl
+    _IMAGE_ENGINE = "pylab"
+except ImportError:
+    try:
+        import cv2
+        _IMAGE_ENGINE = "opencv"
+    except ImportError:
+        print("Either pylab (matplotlib) or openCV must be installed \
+            to view thumbnails")
 
 from .constants import GBDX_BASE_URL
 
@@ -74,15 +88,44 @@ def get_thumbnail(session, cat_id, show=True):
     url = os.path.join(GBDX_BASE_URL,'thumbnails','v1','browse','{}.medium.png'.format(cat_id))
     ret = session.get(url)
     ret.raise_for_status()
-    #pylint: disable=E1103
-    img_data = np.fromstring(ret.content, np.uint8)
-    img = cv2.imdecode(img_data, flags=cv2.CV_LOAD_IMAGE_UNCHANGED)
+    buf = ret.content
+    img = _decode_img(buf)
     if show:
-        cv2.imshow(cat_id,img)
-        cv2.waitKey(0)  #until the user presses a key in the window
-        cv2.destroyWindow(cat_id)
+        _show_img(img, window_title=str(cat_id))
+    return img
+
+def _decode_img_openCV(buf):
+    #pylint: disable=E1103
+    img_data = np.fromstring(buf, np.uint8)
+    img = cv2.imdecode(img_data, flags=cv2.CV_LOAD_IMAGE_UNCHANGED)
     #pylint: enable=E1103
     return img
+
+def _show_img_openCV(cvimg, window_title='Image Thumbnail'):
+    #pylint: disable=E1103
+    cv2.imshow(window_title, cvimg)
+    cv2.waitKey(0)
+    cv2.destroyWindow(window_title)
+    #pylint: enable=E1103
+
+def _decode_img_pylab(buf):
+    img = pl.imread(BytesIO(buf))
+    return img
+
+def _show_img_pylab(img, window_title='Image Thumbnail'):
+    pl.figure()
+    pl.imshow(img)
+    pl.title(window_title)
+    pl.show()
+
+# Function aliases to map generic function
+# to that provided by a specific image engine
+if _IMAGE_ENGINE == "pylab":
+    _decode_img = _decode_img_pylab
+    _show_img = _show_img_pylab
+else:
+    _decode_img = _decode_img_openCV
+    _show_img = _show_img_openCV
 
 if __name__ == '__main__':
     pass
