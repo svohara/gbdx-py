@@ -11,9 +11,7 @@ import shapely.geometry as sg
 PACKAGE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PACKAGE_DIR)
 
-from gbdx.gbdx_auth import get_session
-from gbdx.query import GBDXQuery
-from gbdx.constants import TEST_AOI
+from gbdx import get_session, GBDXQuery, TEST_AOI
 
 class Test(unittest.TestCase):
     def setUp(self):

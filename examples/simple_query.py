@@ -7,27 +7,40 @@ Created on Aug 24, 2015
 import os
 import sys
 import pprint
+import time
 
 PACKAGE_DIR = os.path.dirname( os.path.dirname( os.path.abspath(__file__)) )
 sys.path.insert(0, PACKAGE_DIR)
 
-from gbdx.constants import TEST_AOI, DG_SENSOR_WV2
-from gbdx.gbdx_auth import get_session
-from gbdx.query import GBDXQuery
+import gbdx
 
 def main():
     #get gbdx session object
-    gbdx = get_session()
+    session = gbdx.get_session()
 
     #construct a query object, to search the catalog for
     # images that intersect a given AOI and were created
     # between start and end dates.
     date_range = ('2013-01-15', '2015-01-01')
-    qry = GBDXQuery(TEST_AOI, date_range=date_range, platform_name=DG_SENSOR_WV2,
-                    max_cloud_cover=5, max_off_nadir_angle=15)
+    qry = gbdx.GBDXQuery(gbdx.TEST_AOI, date_range=date_range,
+                         platform_name=gbdx.DG_SENSOR_WV2,
+                         max_cloud_cover=5, max_off_nadir_angle=15)
 
     #execute the query. The results will be a GBDXQueryResult object
-    res = qry(gbdx)
+    print("-"*40)
+    time1 = time.time()
+    res = qry(session)
+    time2 = time.time()
+    print("Query executed in {} seconds".format(time2-time1))
+
+    #note that query results are cached for (default) 300 sec,
+    # so if I call this query again immediately, it should use
+    # the remembered results.
+    time1 = time.time()
+    _res2 = qry(session)  #no reason to do this here, other than show caching behavior
+    time2 = time.time()
+    print("On 2nd attempt, query returned cached results in {} seconds".format(time2-time1))
+
     print("-"*40)
     print res
     print("-"*40)
