@@ -3,7 +3,7 @@ This is the top-level package for the GBDX python interface library.
 """
 
 from .constants import *
-from .gbdx_auth import get_session, configure
+from gbdx_auth.gbdx_auth import get_session
 from .core import get_json, post_json, get_s3creds, \
                 get_order_status, get_catalog_record, \
                 get_thumbnail
