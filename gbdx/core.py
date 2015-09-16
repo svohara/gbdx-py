@@ -31,7 +31,8 @@ def get_json(session, url):
     code for checking the result status and converting
     result to json
     """
-    ret = session.get(url)
+    headers = {'Content-type': 'application/json'}
+    ret = session.get(url, headers=headers)
     ret.raise_for_status()
     return ret.json()
 
@@ -42,7 +43,8 @@ def post_json(session, url, payload):
     code for checking the result status and converting
     the result to json.
     """
-    ret = session.post(url, data=payload)
+    headers = {'Content-type': 'application/json'}
+    ret = session.post(url, data=payload, headers=headers)
     ret.raise_for_status()
     return ret.json()
 
