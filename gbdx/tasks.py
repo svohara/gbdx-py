@@ -8,8 +8,7 @@ import os
 import json
 import sys
 
-from .constants import GBDX_BASE_URL, GBDX_WORKFLOW_STATES
-from .core import get_json
+from gbdx import GBDX_BASE_URL, GBDX_WORKFLOW_STATES, get_json
 
 def list_available_tasks(gbdx):
     url = "/".join([GBDX_BASE_URL,'workflows','v1','tasks'])

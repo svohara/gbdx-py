@@ -9,7 +9,6 @@ queries.
 '''
 import time
 import json
-import os
 
 try:
     import shapely.geometry as sg
@@ -17,9 +16,7 @@ try:
 except ImportError:
     print "You must have the shapely library installed for spatial queries."
 
-from .constants import GBDX_BASE_URL, DG_SENSOR_WV2, TEST_AOI
-from .gbdx_auth import get_session
-from .core import post_json
+from gbdx import GBDX_BASE_URL, DG_SENSOR_WV2, TEST_AOI, get_session, post_json
 
 class GBDXQuery(object):
     """

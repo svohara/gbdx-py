@@ -10,7 +10,7 @@ import sys
 PACKAGE_DIR= os.path.dirname( os.path.dirname( os.path.abspath(__file__)) )
 sys.path.insert(0, PACKAGE_DIR)
 
-from gbdx.gbdx_auth import get_session
+from gbdx import get_session
 
 TEST_CFG_FILE = os.path.join(PACKAGE_DIR,"tests","test_data","test_config_file.txt")
 

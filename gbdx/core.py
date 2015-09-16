@@ -22,7 +22,7 @@ except ImportError:
         print("Either pylab (matplotlib) or openCV must be installed \
             to view thumbnails")
 
-from .constants import GBDX_BASE_URL
+from gbdx.constants import GBDX_BASE_URL
 
 def get_json(session, url):
     """

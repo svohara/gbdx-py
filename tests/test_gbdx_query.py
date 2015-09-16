@@ -11,15 +11,15 @@ import shapely.geometry as sg
 PACKAGE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PACKAGE_DIR)
 
-from gbdx import get_session, GBDXQuery, TEST_AOI
+import gbdx
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.session = get_session()
+        self.session = gbdx.get_session()
         
     def test_A_perform_query(self):
         print("\nTesting simple catalog query")
-        query = GBDXQuery(TEST_AOI)
+        query = gbdx.GBDXQuery(gbdx.TEST_AOI)
         result = query(self.session)
         self.assertTrue( len(result) > 10, "Unexpectedly few results for test query")
 
@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
     def test_B_date_query(self):
         print("\nTesting date-filtered catalog query")
         dates = ('2010-01-01','2015-01-01')
-        query = GBDXQuery(TEST_AOI, date_range=dates)
+        query = gbdx.GBDXQuery(gbdx.TEST_AOI, date_range=dates)
         result = query(self.session)
         self.assertTrue( len(result) == 46, "There should be 46 records returned.")
 
