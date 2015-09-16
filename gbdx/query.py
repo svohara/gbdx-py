@@ -116,7 +116,7 @@ class GBDXQuery(object):
                 return GBDXQueryResult(self._last_query_results)
 
         payload = json.dumps(self.search_body)
-        url = os.path.join(GBDX_BASE_URL,'catalog','v1','search')
+        url = "/".join([GBDX_BASE_URL,'catalog','v1','search'])
 
         json_res = post_json(session, url, payload)
         #res = session.post(url, data=payload)

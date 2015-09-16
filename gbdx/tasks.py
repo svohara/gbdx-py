@@ -12,7 +12,7 @@ from .constants import GBDX_BASE_URL, GBDX_WORKFLOW_STATES
 from .core import get_json
 
 def list_available_tasks(gbdx):
-    url = os.path.join(GBDX_BASE_URL,'workflows','v1','tasks')
+    url = "/".join([GBDX_BASE_URL,'workflows','v1','tasks'])
     return get_json(gbdx, url)
 
 def get_task_definition(gbdx, task_name):
@@ -21,7 +21,7 @@ def get_task_definition(gbdx, task_name):
     @param task_name: The identifier of the task, such as FastOrtho,
     such as is returned by list_available_tasks 
     """
-    url = os.path.join(GBDX_BASE_URL,'workflows','v1','tasks',task_name)
+    url = "/".join([GBDX_BASE_URL,'workflows','v1','tasks',task_name])
     return get_json(gbdx, url)
 
 def _summarize_tasks(workflow_dict):
@@ -50,7 +50,7 @@ def search_workflows(gbdx, state="all", owner=None, lookback_h=3, details=True):
     """
     state = state.lower()
     assert state in GBDX_WORKFLOW_STATES
-    url = os.path.join(GBDX_BASE_URL,'workflows','v1','workflows','search')
+    url = "/".join([GBDX_BASE_URL,'workflows','v1','workflows','search'])
     search_filter = {"state":state, "lookback_h":lookback_h}
     if owner:
         search_filter["owner"]=owner
@@ -71,7 +71,7 @@ def search_workflows(gbdx, state="all", owner=None, lookback_h=3, details=True):
     return (ret, summary)
 
 def get_workflow_status(gbdx, workflow_id):
-    url = os.path.join(GBDX_BASE_URL,'workflows','v1','workflows',workflow_id)
+    url = "/".join([GBDX_BASE_URL,'workflows','v1','workflows',workflow_id])
     return get_json(gbdx, url)
 
 if __name__ == '__main__':
