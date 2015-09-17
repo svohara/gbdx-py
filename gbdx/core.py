@@ -5,7 +5,6 @@ Created on Aug 5, 2015
 This module exposes convenience functions that
 are wrappers to various GBDX RESTful API calls.
 """
-import os
 import numpy as np
 from io import BytesIO
 
@@ -23,7 +22,7 @@ except ImportError:
         print("Either pylab (matplotlib) or openCV must be installed \
             to view thumbnails")
 
-from .constants import GBDX_BASE_URL
+from gbdx.constants import GBDX_BASE_URL
 
 def get_json(session, url):
     """
@@ -32,7 +31,8 @@ def get_json(session, url):
     code for checking the result status and converting
     result to json
     """
-    ret = session.get(url)
+    headers = {'Content-type': 'application/json'}
+    ret = session.get(url, headers=headers)
     ret.raise_for_status()
     return ret.json()
 
@@ -43,12 +43,13 @@ def post_json(session, url, payload):
     code for checking the result status and converting
     the result to json.
     """
-    ret = session.post(url, data=payload)
+    headers = {'Content-type': 'application/json'}
+    ret = session.post(url, data=payload, headers=headers)
     ret.raise_for_status()
     return ret.json()
 
 def get_s3creds(session, duration=3600):
-    url = os.path.join(GBDX_BASE_URL, "s3creds","v1","prefix?duration={}".format(duration))
+    url = "/".join([GBDX_BASE_URL, "s3creds","v1","prefix?duration={}".format(duration)])
     s3_data = get_json(session, url)    
     s3_url = "s3://{bucket}/{prefix}".format(**s3_data)
     return (s3_url, s3_data)
@@ -60,7 +61,7 @@ def get_order_status(session, soli):
     @param soli: The order number, or 'soli'
     @return: A dictionary that provides the order status information.
     """
-    url = os.path.join(GBDX_BASE_URL,'orders','v1','status',soli)
+    url = "/".join([GBDX_BASE_URL,'orders','v1','status',soli])
     return get_json(session, url)
 
 def get_catalog_record(session, cat_id):
@@ -71,7 +72,7 @@ def get_catalog_record(session, cat_id):
     @param cat_id: The image catalog id
     @return: A dictionary with the record information or None
     """
-    url = os.path.join(GBDX_BASE_URL, "catalog","v1", "record", cat_id)
+    url = "/".join([GBDX_BASE_URL, "catalog","v1", "record", cat_id])
     return get_json(session, url)
 
 def get_thumbnail(session, cat_id, show=True):
@@ -85,7 +86,8 @@ def get_thumbnail(session, cat_id, show=True):
     @return: An open-cv image, represented as a numpy ndarray. Can be manipulated using
     openCV functions, saved to disk, or whatever the user desires.
     """
-    url = os.path.join(GBDX_BASE_URL,'thumbnails','v1','browse','{}.medium.png'.format(cat_id))
+    url = "/".join([GBDX_BASE_URL,'thumbnails','v1','browse',
+                       '{}.medium.png'.format(cat_id)])
     ret = session.get(url)
     ret.raise_for_status()
     buf = ret.content
