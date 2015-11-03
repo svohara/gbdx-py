@@ -33,6 +33,11 @@ class GBDXQuery(object):
         Constructor
         @param AOI: A shapely polygon object in WGS84 LON/LAT coordinates, from which
         a bounding box will be computed, or an input list/tuple as (lon0, lat0, lon1, lat1)
+        @note: The AOI will filter based on intersection. So if any part of the image intersects
+        the bounding box of the AOI, the image will be included in the results. To force a
+        "contains" logic, you should query, but then filter the results to further reduce
+        the set to only those which fully contain the AOI. See get_ids_containing_poly() in
+        the GBDXQueryResult object.
         @param date_range: A tuple (start_date, end_date), where the dates are specified
         as zero-padded YYYY-MM-DD strings. You may specify None as well. For example,
         to filter based on a start date you can set date_range=(2010-01-01, None).
@@ -213,6 +218,15 @@ class GBDXQueryResult(object):
         """
         f = self.get_property_from_id(ID, 'footprintWkt')
         return swkt.loads(f)
+    
+    def get_ids_containing_poly(self, poly):
+        """
+        Checks the footprint shape of each of the images in this result set,
+        and returns only those where the footprint fully contains the input
+        shapely polygon.
+        """
+        filtered = [ cid for cid in self.list_IDs() if self.get_footprint_from_id(cid).contains(poly) ]
+        return filtered
 
 def get_test_query_results():
     """

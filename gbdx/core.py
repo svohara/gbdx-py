@@ -7,6 +7,7 @@ are wrappers to various GBDX RESTful API calls.
 """
 import numpy as np
 from io import BytesIO
+import json
 
 #Fancy importing to allow the user to use
 # either openCV or matplotlib for image rendering
@@ -39,7 +40,7 @@ def get_json(session, url):
 def post_json(session, url, payload):
     """
     Wrapper for session.post() when you want to get
-    the results as json. Handles the boilder plate
+    the results as json. Handles the boiler plate
     code for checking the result status and converting
     the result to json.
     """
@@ -54,6 +55,19 @@ def get_s3creds(session, duration=3600):
     s3_url = "s3://{bucket}/{prefix}".format(**s3_data)
     return (s3_url, s3_data)
 
+def order_images(session, cat_id_list):
+    """
+    Places an order for the list of catalog ids
+    @return: python dictionary containing information including
+    the salesOrderNumber (soli)
+    @note: Use get_order_status function to check on 
+    the progress of the order
+    """
+    url = "/".join([GBDX_BASE_URL,'orders','v1'])
+    payload = json.dumps(cat_id_list)
+    rc = post_json(session, url, payload)
+    return rc
+    
 def get_order_status(session, soli):
     """
     Retrieves the status information for a specified imagery order.
