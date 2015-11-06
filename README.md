@@ -9,4 +9,3 @@ _One of the following is required to view thumbnail images retrieved from the ca
 * matplotlib (this is tried first)
 * openCV (2.4.x, with python 2.7x bindings)
 
-
