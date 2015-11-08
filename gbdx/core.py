@@ -5,7 +5,6 @@ Created on Aug 5, 2015
 This module exposes convenience functions that
 are wrappers to various GBDX RESTful API calls.
 """
-import numpy as np
 from io import BytesIO
 
 #Fancy importing to allow the user to use
@@ -98,6 +97,7 @@ def get_thumbnail(session, cat_id, show=True):
 
 def _decode_img_openCV(buf):
     #pylint: disable=E1103
+    import numpy as np
     img_data = np.fromstring(buf, np.uint8)
     img = cv2.imdecode(img_data, flags=cv2.CV_LOAD_IMAGE_UNCHANGED)
     #pylint: enable=E1103
